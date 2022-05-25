@@ -55,7 +55,7 @@ Cell.radomize_mine()
 
 
 #https://www.youtube.com/watch?v=OqbGRZx4xUc&list=PLKtxpHMu1aWg-UEuKFXpzHzFK8UpsuIcP&index=3
-#01:33:21
+#02:01:14
 # Run The window
 root.mainloop()
 
