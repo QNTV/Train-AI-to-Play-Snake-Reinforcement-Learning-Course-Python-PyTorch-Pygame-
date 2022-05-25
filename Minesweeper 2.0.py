@@ -46,12 +46,16 @@ for x in range(settings.GRID_SIZE):
         c.cell_btn_object.grid(
             column = x, row = y
         )
+# Call the label from the Cell class
+Cell.create_cell_count_label(left_frame)
+Cell.cell_count_lable_object.place(x= 0, y= 0)
+
 
 Cell.radomize_mine()
 
 
 #https://www.youtube.com/watch?v=OqbGRZx4xUc&list=PLKtxpHMu1aWg-UEuKFXpzHzFK8UpsuIcP&index=3
-#01:25:14
+#01:33:21
 # Run The window
 root.mainloop()
 
