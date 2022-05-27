@@ -1,6 +1,8 @@
 from tkinter import Button, Label
 import random
 import settings
+import ctypes
+import sys
 
 class Cell:
     all = []
@@ -9,6 +11,7 @@ class Cell:
     def __init__(self, x ,y, is_mine= False):
         self.is_mine = is_mine
         self.is_opened = False
+        self.is_mine_candidate = False
         self.cell_btn_object = None
         self.x = x
         self.y = y
@@ -21,7 +24,6 @@ class Cell:
             location,
             width=12,
             height=4,
-
         )
         btn.bind('<Button-1>', self.left_click_actions) # left click
         btn.bind('<Button-3>', self.right_click_actions) # right click
@@ -46,9 +48,15 @@ class Cell:
             if self.surrounded_cells_mines_length == 0:
                 for cell_obj in self.surrounded_cells:
                     cell_obj.show_cell()
-                self.show_cell()
-
             self.show_cell()
+            # If mines count is equal to the cell count, player won!
+            if Cell.cell_count == settings.MINES_COUNT:
+                ctypes.windll.user32.MessageBoxW(0, "Congratulations! You won the game!", 'Game Over', 0)
+
+
+        # Cancel Left and Right click events if cell is already opened:
+        self.cell_btn_object.unbind('<Button-1>')
+        self.cell_btn_object.unbind('<Button-3>')
 
     def get_cell_by_axis(self, x, y):
         # return a cell object based on the value of x,y
@@ -90,6 +98,13 @@ class Cell:
                 Cell.cell_count_lable_object.configure(
                     text = f"Cells Left: {Cell.cell_count}"
                 )
+            #if this was a mine candidate, then for saety, we should
+            # Configure the background color to SystemButtonFace
+            self.cell_btn_object.configure(
+                bg = 'SystemButtonFace'
+            )
+
+
         #Mark the cell as opened (use is as the last line of this method)
         self.is_opened = True
 
@@ -97,11 +112,22 @@ class Cell:
 
     def show_mine(self):
         # a logic to interrup the game and display a message that player lost!
+        ctypes.windll.user32.MessageBoxW(0, "You clicked on a mine", 'Game Over', 0)
         self.cell_btn_object.configure( bg='red')
+        sys.exit()
 
     def right_click_actions(self, event):
-        print(event)
-        print('i am right clicking')
+        if not self.is_mine_candidate:
+            self.cell_btn_object.configure(
+                bg = 'orange'
+            )
+            self.is_mine_candidate = True
+        else:
+            self.cell_btn_object.configure(
+                bg = 'SystemButtonFace'
+            )
+            self.is_mine_candidate  = False
+
 
     @staticmethod
     def radomize_mine():
